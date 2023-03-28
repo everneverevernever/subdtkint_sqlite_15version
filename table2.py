@@ -56,10 +56,9 @@ def create_table2():
         group = comboExample.get()
         with connect('database\database.db') as db:
             cursor = db.cursor()
-            cursor.execute('''select * from table1 WHERE id = ?''', (group,))
+            cursor.execute('''select * from table1 WHERE group_name = ?''', (group,))
             group = cursor.fetchall()
-            print(group[-1])
-            insert_inf = (name, group[-1][-1])
+            insert_inf = (name, group[-1][-2])
             query = """ INSERT INTO table2(FIO, group_name) VALUES (?, ?)"""
             cursor.execute(query, insert_inf)
             db.commit()
@@ -76,7 +75,10 @@ def create_table2():
                     db.commit()
                     refresh2()
                 elif set_col2 == 'group_name':
-                    cursor.execute("""Update table2 set""" + ' ' + set_col2 + """ = ? where id = ? """, (comboExample.get(), id))
+                    group = comboExample.get()
+                    cursor.execute('''select * from table1 WHERE group_name = ?''', (group,))
+                    group = cursor.fetchall()
+                    cursor.execute("""Update table2 set""" + ' ' + set_col2 + """ = ? where id = ? """, (group[-1][-2], id))
                     db.commit()
                     refresh2()
 
